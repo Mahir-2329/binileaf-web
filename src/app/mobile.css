@@ -1,0 +1,266 @@
+/* ══════════════════════════════════════════════════════════════ mobile ══
+   Phone-first corrections, not a squeezed desktop.
+
+   Loaded after @layer components on purpose: several rules here have to beat
+   `.t-*`, which hard-code their own line-heights. Every rule is written at
+   `max-width: 640px` or `max-width: 1023px` and nothing else.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── type ──────────────────────────────────────────────────────────────
+   Desktop clamps re-anchored for 360–640px. Each mobile clamp's max is the
+   desktop clamp's own value at exactly 640px, so the boundary is seamless.
+   ──────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  :root {
+    --text-display: clamp(2.5rem, -0.43rem + 13.03vw, 4.78rem); /* 40px @360 → 76.5px @640 */
+    --text-h1: clamp(2.125rem, 0.35rem + 7.8vw, 3.35rem);       /* 34px @360 → 53.6px @640 */
+    --text-lede: clamp(1.1875rem, 0.9rem + 1.26vw, 1.41rem);    /* 19px @360 → 22.5px @640 */
+  }
+
+  .t-display { font-size: var(--text-display); line-height: 0.92; }
+  .t-h1      { font-size: var(--text-h1); line-height: 1; letter-spacing: -0.02em; }
+  .t-lede    { font-size: var(--text-lede); line-height: 1.52; }
+}
+
+@media (max-width: 1023px) {
+  :root {
+    /* Every sticky offset reads --header-h. Fold the notch in here once and
+       nothing else has to know about it. */
+    --header-h: calc(68px + env(safe-area-inset-top, 0px));
+    --actionbar-h: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Only the pages that render a chip rail carry its height. */
+  body:has([data-menu-rail]) { --rail-h: 60px; }
+
+  /* Landscape on a notched phone puts the inset on the sides, not the top. */
+  .shell {
+    padding-inline: max(
+      var(--spacing-gutter),
+      env(safe-area-inset-left, 0px),
+      env(safe-area-inset-right, 0px)
+    );
+  }
+}
+
+/* ── hero ─────────────────────────────────────────────────────────────
+   The desktop scrim is a 104° diagonal built for a 16:9 left-column
+   composition. In a portrait frame it darkens the top-left corner and
+   leaves the bottom-left — where the h1 now lives — at 30% ink.
+   ──────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1023px) {
+  .hero-scrim::after {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-ink-deep) 34%, transparent) 0%,
+      color-mix(in oklab, var(--color-ink-deep) 62%, transparent) 42%,
+      color-mix(in oklab, var(--color-ink-deep) 88%, transparent) 100%
+    );
+  }
+}
+
+/* ── tap targets ─────────────────────────────────────────────────────── */
+
+@media (max-width: 1023px) {
+  .ghost {
+    min-height: 44px;
+    align-items: flex-end;
+    padding-bottom: 12px;
+  }
+
+  .chip {
+    min-height: 44px;
+    padding-block: 0;
+  }
+
+  .field__control { padding-block: 12px; }
+  select.field__control { min-height: 44px; }
+}
+
+/* ── price row ────────────────────────────────────────────────────────
+   At 360px the name column is 230px. A long item plus a MUST TRY flag
+   plus leader dots wants 366px, so the dots go: they exist to carry the
+   eye across a wide gap, and at this width there is no gap to cross. The
+   1px row rule they were duplicating is still there.
+
+   Scoped to `.price-row .leaders` so the carousel cards and the red
+   add-on band — both of which have real gaps — keep theirs.
+   ──────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .price-row {
+    grid-template-columns: 15px 1fr auto;
+    column-gap: 10px;
+    padding-block: 13px;
+  }
+
+  .price-row__line {
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: 2px;
+  }
+
+  /* With the dots gone, the price still has to be pushed to the edge. */
+  .price-row .leaders { display: none; }
+  .price-row .price { margin-left: auto; padding-left: 14px; }
+  .price-row .flag { margin-left: 8px; }
+  .price { min-width: 0; }
+  .price__value { font-size: 1.0625rem; }
+  .price-row__desc { margin-top: 4px; font-size: 0.875rem; }
+}
+
+/* ── marks ────────────────────────────────────────────────────────────
+   A 112px circle inset past a 20px gutter puts a quarter of itself
+   off-screen at 360px.
+   ──────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  /* The 112px base overhangs a 20px gutter; the --sm badge is now in flow,
+     and it needs its 64px inner diameter for "— 12:30 AM". */
+  .stamp-badge { width: 96px; height: 96px; }
+
+  .photo-index { font-size: 0.5625rem; letter-spacing: 0.14em; }
+
+  .dropcap::first-letter {
+    font-size: 3.4em;
+    line-height: 0.82;
+    margin: 0.08em 0.1em 0 0;
+  }
+}
+
+/* ── touch states ─────────────────────────────────────────────────────
+   The lift-and-offset on a button is its printed personality, and on
+   touch it never fires — so there is no press feedback at all. These give
+   it one, and stop iOS leaving :hover stuck on the last thing tapped.
+   ──────────────────────────────────────────────────────────────────── */
+
+@media (hover: none) {
+  .btn:active { transform: translate(1px, 1px); }
+  .btn--primary:active { box-shadow: 2px 2px 0 var(--color-stamp); }
+  .btn--inverse:active { box-shadow: 2px 2px 0 var(--color-brass); }
+
+  .btn--stamp:active {
+    transform: rotate(0deg);
+    background: var(--color-stamp);
+    color: var(--color-paper);
+  }
+
+  .ghost:active { border-bottom-color: var(--color-stamp); }
+  .ghost:active .ghost__label { transform: none; }
+}
+
+/* A tapped link keeps :hover on iOS, so a photo stays permanently zoomed. */
+@media not all and (hover: hover) and (pointer: fine) {
+  a:hover .photo img,
+  button:hover .photo img { transform: none; }
+  .chip:hover { border-color: color-mix(in oklab, var(--color-ink) 30%, transparent); }
+}
+
+/* Where hover was the only thing marking a link as a link, make it permanent. */
+.link-rule {
+  border-bottom: 1px solid color-mix(in oklab, currentColor 35%, transparent);
+  padding-bottom: 2px;
+}
+
+/* ── chips: the menu rail uses aria-current, the gallery uses aria-pressed ── */
+
+.chip[aria-current='true'] {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-color: var(--color-ink);
+}
+.chip[aria-current='true']::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--color-stamp);
+}
+
+/* ── the bottom action bar ────────────────────────────────────────────
+   Two things, because a café has two things you can do from a phone.
+   ──────────────────────────────────────────────────────────────────── */
+
+.action-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 35;
+  display: flex;
+  height: calc(60px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-top: 1px solid var(--color-brass);
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+.action-bar[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.action-bar__half {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 60px;
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.action-bar__half + .action-bar__half {
+  border-left: 1px solid color-mix(in oklab, var(--color-paper) 22%, transparent);
+}
+.action-bar__half:active { background: var(--color-ink-deep); }
+
+/* Any overlay — drawer, lightbox, index sheet — locks the body. One rule
+   takes the bar out from under all three. */
+body[data-lock='true'] .action-bar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .action-bar { transform: none; }
+}
+
+/* ── jump to top ──────────────────────────────────────────────────── */
+
+.to-top {
+  position: fixed;
+  right: var(--spacing-gutter);
+  bottom: calc(16px + var(--actionbar-h));
+  z-index: 34;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  box-shadow: 4px 4px 0 var(--color-stamp);
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+.to-top[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .to-top { transform: none; }
+}

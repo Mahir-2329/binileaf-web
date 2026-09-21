@@ -1,0 +1,577 @@
+/* ═══════════════════════════════════════════════════════════ components ══
+   The print details live here rather than in long utility strings: buttons,
+   price rows, stamps, section headers, fields. Layout stays in Tailwind.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────────────────── buttons ──── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding-inline: 28px;
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out),
+    transform var(--dur-micro) var(--ease-out);
+}
+.btn--sm { height: 44px; padding-inline: 20px; font-size: 0.6875rem; }
+.btn:disabled,
+.btn[aria-disabled='true'] { opacity: 0.45; pointer-events: none; }
+.btn svg { flex: none; }
+
+.btn--primary { background: var(--color-ink); color: var(--color-paper); }
+.btn--primary:hover {
+  background: var(--color-ink-deep);
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0 var(--color-stamp);
+}
+.btn--primary:active { transform: none; box-shadow: none; }
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-ink);
+  box-shadow: inset 0 0 0 1px var(--color-ink);
+}
+.btn--secondary:hover { background: var(--color-ink); color: var(--color-paper); }
+.btn--secondary:active { transform: translate(1px, 1px); }
+
+.btn--inverse { background: var(--color-paper); color: var(--color-ink); }
+.btn--inverse:hover {
+  background: var(--color-paper-bright);
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0 var(--color-brass);
+}
+.btn--inverse:active { transform: none; box-shadow: none; }
+.btn--inverse:focus-visible { outline-color: var(--color-brass); }
+
+.btn--outlineInverse {
+  background: transparent;
+  color: var(--color-paper);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-paper) 60%, transparent);
+}
+.btn--outlineInverse:hover { background: var(--color-paper); color: var(--color-ink); }
+.btn--outlineInverse:focus-visible { outline-color: var(--color-brass); }
+
+.btn--stamp {
+  background: transparent;
+  color: var(--color-stamp-deep);
+  box-shadow: inset 0 0 0 2px var(--color-stamp);
+  transform: rotate(-1.5deg);
+}
+.btn--stamp:hover { transform: rotate(0deg); background: var(--color-stamp); color: var(--color-paper); }
+.btn--stamp:focus-visible { outline-color: var(--color-ink); }
+
+/* ──────────────────────────────────────────────────────── ghost link ──── */
+
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-ink) 35%, transparent);
+  cursor: pointer;
+  transition: border-color var(--dur-micro) var(--ease-out);
+}
+.ghost:hover { border-bottom-color: var(--color-stamp); }
+.ghost__label { transition: transform var(--dur-micro) var(--ease-out); }
+.ghost:hover .ghost__label { transform: translateX(2px); }
+.ghost--paper {
+  color: var(--color-paper);
+  border-bottom-color: color-mix(in oklab, var(--color-paper) 35%, transparent);
+}
+.ghost--paper:hover { border-bottom-color: var(--color-brass); }
+.ghost--paper:focus-visible { outline-color: var(--color-brass); }
+
+/* ─────────────────────────────────────────────────── section headers ──── */
+
+.sec-num {
+  flex: none;
+  font-family: var(--font-ui);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--color-stamp);
+}
+
+.sec-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--color-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 700ms var(--ease-out) 120ms;
+}
+[data-revealed='true'] .sec-rule { transform: scaleX(1); }
+.on-navy .sec-rule { background: var(--color-ink-wash); }
+
+.sec-deck { color: var(--color-pencil); }
+.on-navy .sec-deck { color: var(--color-paper-dim); }
+
+.sec-meta {
+  flex: none;
+  font-family: var(--font-ui);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-pencil);
+}
+.on-navy .sec-meta { color: var(--color-paper-dim); }
+
+/* Deco double rule — once per page, at the page title. */
+.deco-rule { border-top: 3px solid var(--color-ink); padding-top: 4px; }
+.deco-rule::after { content: ''; display: block; height: 1px; background: var(--color-ink); }
+
+/* ────────────────────────────────────────────────────────── price row ──── */
+
+.price-row {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: baseline;
+  column-gap: 12px;
+  padding-block: 16px;
+  border-bottom: 1px solid var(--rule-on-paper);
+  transition: background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.price-row:last-child { border-bottom: 0; }
+/* Prices live on the menu card and nowhere else; elsewhere a row is a name. */
+
+.on-navy .price-row { border-bottom-color: var(--rule-on-navy); }
+
+@media (hover: hover) {
+  .price-row:hover {
+    background: color-mix(in oklab, var(--color-paper-shade) 45%, transparent);
+  }
+  .on-navy .price-row:hover {
+    background: color-mix(in oklab, var(--color-ink-wash) 30%, transparent);
+  }
+  .price-row:hover .leaders { opacity: 0.6; }
+}
+
+.price-row__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  width: 100%;
+  column-gap: 0;
+  row-gap: 2px;
+}
+.price-row__name { flex: 0 1 auto; min-width: 0; }
+.price-row__name {
+  font-family: var(--font-display);
+  font-size: var(--text-item);
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 8, 'WONK' 0;
+  letter-spacing: -0.004em;
+  line-height: 1.24;
+}
+.on-navy .price-row__name { color: var(--color-paper); }
+
+.price-row__desc {
+  max-width: 52ch;
+  margin-top: 5px;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-pencil);
+}
+.on-navy .price-row__desc { color: var(--color-paper-dim); }
+
+.price {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  margin-left: auto;
+  min-width: 4.5ch;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.price__sign {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.72em;
+  vertical-align: 0.12em;
+  margin-right: 0.12em;
+  color: var(--color-pencil);
+}
+.on-navy .price__sign { color: var(--color-paper-dim); }
+.price__value {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-item);
+  font-variation-settings: 'SOFT' 8, 'WONK' 0;
+  color: var(--color-ink);
+}
+.on-navy .price__value { color: var(--color-paper); }
+.price--brass .price__value { color: var(--color-brass); }
+
+/* Veg mark — an 11px square with a filled dot. */
+.veg-mark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--color-leaf);
+  translate: 0 -0.1em;
+}
+.veg-mark::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--color-leaf);
+}
+
+/* Leaf green on ink-deep is barely 1.9:1 — lift it toward paper on navy. */
+.on-navy .veg-mark { border-color: color-mix(in oklab, var(--color-leaf) 45%, var(--color-paper)); }
+.on-navy .veg-mark::before { background: color-mix(in oklab, var(--color-leaf) 45%, var(--color-paper)); }
+
+/* Small caps flag box. */
+.flag {
+  display: inline-block;
+  padding: 4px 7px;
+  margin-left: 10px;
+  border: 1px solid var(--color-stamp);
+  font-family: var(--font-ui);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-stamp);
+  white-space: nowrap;
+  translate: 0 -0.15em;
+}
+.on-navy .flag { border-color: var(--color-brass); color: var(--color-brass); }
+
+/* ──────────────────────────────────────────────────────────── stamps ──── */
+
+.stamp-badge {
+  position: relative;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  padding: 12px;
+  border: 2px solid var(--color-stamp);
+  border-radius: 9999px;
+  rotate: -8deg;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--color-stamp);
+  opacity: 0.92;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 1 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23d)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 1 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23d)'/%3E%3C/svg%3E");
+  -webkit-mask-size: 120px;
+  mask-size: 120px;
+}
+.stamp-badge::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid currentColor;
+  border-radius: 9999px;
+}
+.stamp-badge--brass { border-color: var(--color-brass); color: var(--color-brass); }
+.stamp-badge--paper { border-color: var(--color-paper); color: var(--color-paper); }
+.stamp-badge--sm { width: 88px; height: 88px; font-size: 0.5rem; letter-spacing: 0.14em; }
+
+/* ───────────────────────────────────────────────────────── crop marks ──── */
+
+.crop { position: relative; }
+.crop__mark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  border-color: var(--color-stamp);
+  border-style: solid;
+  border-width: 0;
+}
+.crop--brass .crop__mark { border-color: var(--color-brass); }
+.crop__mark--tl { top: -8px;    left: -8px;   border-top-width: 1px;    border-left-width: 1px; }
+.crop__mark--tr { top: -8px;    right: -8px;  border-top-width: 1px;    border-right-width: 1px; }
+.crop__mark--bl { bottom: -8px; left: -8px;   border-bottom-width: 1px; border-left-width: 1px; }
+.crop__mark--br { bottom: -8px; right: -8px;  border-bottom-width: 1px; border-right-width: 1px; }
+
+/* ───────────────────────────────────────────────────────────── photos ──── */
+
+.photo { position: relative; overflow: hidden; background: var(--color-paper-shade); }
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+
+a .photo img,
+button .photo img { transition: transform 700ms var(--ease-out); }
+a:hover .photo img,
+button:hover .photo img { transform: scale(1.03); }
+
+.photo-paste {
+  border: 14px solid var(--color-paper-bright);
+  box-shadow: 8px 8px 0 color-mix(in oklab, var(--color-ink) 10%, transparent);
+  rotate: -1.5deg;
+}
+.photo-paste--alt { rotate: 1.2deg; }
+
+.photo-frame {
+  padding: 6px;
+  border: 1px solid color-mix(in oklab, var(--color-ink) 18%, transparent);
+  background: var(--color-paper);
+}
+.on-navy .photo-frame {
+  border-color: color-mix(in oklab, var(--color-paper) 22%, transparent);
+  background: transparent;
+}
+
+.photo-index {
+  font-family: var(--font-ui);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-pencil);
+  font-variant-numeric: tabular-nums;
+}
+.on-navy .photo-index { color: var(--color-paper-dim); }
+
+/* Navy scrim over photography — the only permitted gradient.
+   One pass across, so type on the left always has a ground to sit on. The
+   transparent header carries its own scrim (see Header). */
+.scrim img { filter: saturate(0.72) contrast(1.04) brightness(0.92); }
+.scrim::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      var(--color-ink-deep) 4%,
+      color-mix(in oklab, var(--color-ink-deep) 92%, transparent) 38%,
+      color-mix(in oklab, var(--color-ink-deep) 62%, transparent) 68%,
+      color-mix(in oklab, var(--color-ink-deep) 42%, transparent) 100%
+    );
+}
+.scrim--flat::after {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-ink-deep) 26%, transparent) 0%,
+    color-mix(in oklab, var(--color-ink-deep) 82%, transparent) 100%
+  );
+}
+
+/* ───────────────────────────────────────────────────────────── chips ──── */
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  border: 1px solid color-mix(in oklab, var(--color-ink) 30%, transparent);
+  border-radius: 0;
+  font-family: var(--font-ui);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+.chip:hover { border-color: var(--color-ink); }
+.chip[aria-pressed='true'],
+.chip[data-active='true'] {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-color: var(--color-ink);
+}
+.chip[aria-pressed='true']::after,
+.chip[data-active='true']::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--color-stamp);
+}
+
+/* ───────────────────────────────────────────────────────────── forms ──── */
+
+.field { display: block; }
+.field__label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-pencil);
+  transition: color var(--dur-micro) var(--ease-out);
+}
+.field__req { margin-left: 4px; color: var(--color-stamp); }
+
+.field__control {
+  width: 100%;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-ink) 30%, transparent);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color var(--dur-micro) var(--ease-out);
+}
+.field__control::placeholder { color: color-mix(in oklab, var(--color-pencil) 60%, transparent); }
+.field__control:focus { border-bottom-width: 2px; border-bottom-color: var(--color-stamp); padding-bottom: 9px; }
+.field:focus-within .field__label { color: var(--color-ink); }
+.field:has(.field__control:focus-visible) { outline: 2px solid var(--color-stamp); outline-offset: 4px; }
+
+textarea.field__control { min-height: 132px; resize: vertical; line-height: 1.6; }
+select.field__control { appearance: none; -webkit-appearance: none; padding-right: 28px; cursor: pointer; }
+
+.field--error .field__control { border-bottom-color: var(--color-stamp); }
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.8125rem;
+  color: var(--color-stamp-deep);
+}
+
+/* ───────────────────────────────────────────────────────── accordion ──── */
+
+.acc__row { border-top: 1px solid var(--rule-on-paper); }
+.acc__row:last-child { border-bottom: 1px solid var(--rule-on-paper); }
+.acc__trigger {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  padding-block: 22px;
+  text-align: left;
+}
+.acc__q {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 8, 'WONK' 0;
+  line-height: 1.16;
+  text-wrap: balance;
+}
+.acc__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-base) var(--ease-inout); }
+.acc__panel[data-open='true'] { grid-template-rows: 1fr; }
+.acc__panel > div { overflow: hidden; }
+
+/* ──────────────────────────────────────────────────── rules + ledger ──── */
+
+.ledger-row { border-top: 1px solid var(--rule-on-paper); }
+.on-navy .ledger-row { border-top-color: var(--rule-on-navy); }
+
+.side-rule-leaf  { border-left: 3px solid var(--color-leaf);  padding-left: 18px; }
+.side-rule-brass { border-left: 3px solid var(--color-brass); padding-left: 18px; }
+.side-rule-stamp { border-left: 3px solid var(--color-stamp); padding-left: 24px; }
+
+.rule-hair { border-top: 1px solid var(--rule-on-paper); }
+.on-navy .rule-hair { border-top-color: var(--rule-on-navy); }
+.rule-full { border-top: 1px solid var(--color-ink); }
+.rule-brass { border-top: 1px solid var(--color-brass); }
+
+/* ───────────────────────────────────────────────────── nav specifics ──── */
+
+.nav-link {
+  position: relative;
+  font-family: var(--font-ui);
+  font-size: var(--text-label-lg);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 1px;
+  background: var(--color-stamp);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-micro) var(--ease-out);
+}
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  left: -13px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 5px;
+  height: 5px;
+  background: var(--color-stamp);
+}
+
+.drawer-row {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 2.75rem);
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 4, 'WONK' 0;
+  line-height: 1.05;
+  color: var(--color-paper);
+}
+
+/* ─────────────────────────────────────────────────────────── menu card ──── */
+/* A printed menu is set in columns, so this one is too. Two columns from
+   1280px; categories are kept whole, because a category split across a column
+   break is the thing that makes a card look like a database dump. */
+
+.menu-card > * {
+  break-inside: avoid;
+  margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+}
+.menu-card > *:last-child { margin-bottom: 0; }
+
+@media (min-width: 900px) {
+  .menu-card {
+    columns: 2;
+    column-gap: clamp(2.25rem, 3vw, 3.5rem);
+    column-fill: balance;
+  }
+}
+
+@media (min-width: 1280px) {
+  .menu-card { columns: 3; }
+}
+
+/* The card is dense on purpose — a menu you can read across, not a feed. */
+.menu-card .price-row { padding-block: 11px; }
+.menu-card .price-row__name,
+.menu-card .price__value { font-size: 1.0625rem; }

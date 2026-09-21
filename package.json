@@ -1,0 +1,31 @@
+{
+  "name": "binileaf",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:push": "node db/seed.mjs",
+    "db:schema": "node db/seed.mjs --schema-only",
+    "db:seed": "node db/seed.mjs --seed-only"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "lucide-react": "^1.47.0",
+    "next": "16.3.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "dotenv": "^18.0.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.5",
+    "playwright": "^1.63.0",
+    "sharp": "^0.35.4",
+    "tailwindcss": "^4"
+  }
+}

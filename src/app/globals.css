@@ -1,0 +1,376 @@
+/* Layer order is declared up front so the cascade is explicit rather than
+   dependent on import order: `mobile` sits after `components` (so it can beat
+   `.t-*`, which hard-code their own line-heights) and before `utilities` (so a
+   Tailwind utility still wins over both). */
+@layer theme, base, components, mobile, utilities;
+
+@import "tailwindcss";
+@import "./components.css" layer(components);
+@import "./mobile.css" layer(mobile);
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BINILEAF — "Two inks, one press."
+   Navy ink and cream paper do the structural work. Stamp red, brass and
+   leaf are a second plate: marks, numbers and rules only, never fields.
+   If it could not be printed on a menu card with two inks, it is not here.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ---- INKS ---- */
+  --color-ink:          #152B4F;
+  --color-ink-deep:     #0C1A31;
+  --color-ink-wash:     #2C4573;
+  --color-paper:        #F6EEE0;
+  --color-paper-bright: #FDF8EF;
+  --color-paper-shade:  #E7D9C2;
+  --color-paper-dim:    #C6B8A1;
+  --color-pencil:       #6B5C46;
+  --color-stamp:        #C0452C;
+  --color-stamp-deep:   #A63A23;
+  --color-brass:        #B5822F;
+  --color-leaf:         #3F5A3F;
+
+  /* ---- TYPEFACES ---- */
+  --font-display: var(--font-fraunces), "Hoefler Text", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-body:    var(--font-newsreader), "Iowan Old Style", Charter, Georgia, serif;
+  --font-ui:      var(--font-ui-face), "Helvetica Neue", Arial, system-ui, sans-serif;
+
+  /* ---- TYPE SCALE ---- */
+  --text-display: clamp(3.25rem, 1.1rem + 9.2vw, 8.5rem);
+  --text-display--line-height: 0.90;
+  --text-display--letter-spacing: -0.025em;
+  --text-display--font-weight: 600;
+
+  --text-h1: clamp(2.5rem, 1.35rem + 5vw, 5rem);
+  --text-h1--line-height: 0.96;
+  --text-h1--letter-spacing: -0.018em;
+  --text-h1--font-weight: 600;
+
+  --text-h2: clamp(2rem, 1.3rem + 3.2vw, 3.5rem);
+  --text-h2--line-height: 1.02;
+  --text-h2--letter-spacing: -0.012em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: clamp(1.375rem, 1.13rem + 1.15vw, 1.875rem);
+  --text-h3--line-height: 1.16;
+  --text-h3--letter-spacing: -0.006em;
+  --text-h3--font-weight: 600;
+
+  --text-item: clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem);
+  --text-item--line-height: 1.24;
+  --text-item--letter-spacing: -0.004em;
+  --text-item--font-weight: 500;
+
+  --text-lede: clamp(1.25rem, 1.08rem + 0.82vw, 1.625rem);
+  --text-lede--line-height: 1.44;
+  --text-lede--font-weight: 400;
+
+  --text-body: clamp(1.0625rem, 1.02rem + 0.24vw, 1.1875rem);
+  --text-body--line-height: 1.62;
+  --text-body--letter-spacing: 0.002em;
+
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.5;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.42;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.1;
+  --text-label--letter-spacing: 0.18em;
+  --text-label--font-weight: 600;
+
+  --text-label-lg: 0.75rem;
+  --text-label-lg--line-height: 1.1;
+  --text-label-lg--letter-spacing: 0.16em;
+  --text-label-lg--font-weight: 600;
+
+  /* ---- RHYTHM ---- */
+  --spacing: 0.25rem;
+  --spacing-gutter:        clamp(1.25rem, 4vw, 4.5rem);
+  --spacing-section:       clamp(3.25rem, 9vw, 9rem);
+  --spacing-section-tight: clamp(2.5rem, 6vw, 5.5rem);
+  --spacing-grid:          clamp(1rem, 2vw, 2rem);
+
+  /* ---- RADIUS: there is none ---- */
+  --radius-none: 0px;
+  --radius-stamp: 9999px;
+
+  /* ---- MOTION ---- */
+  --ease-out:   cubic-bezier(0.16, 1, 0.30, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 160ms;
+  --dur-base:  260ms;
+  --dur-enter: 520ms;
+
+  /* ---- CONTAINER ---- */
+  --container-page: 1560px;
+  --container-text: 62ch;
+}
+
+/* Derived rules — always mixed from the ink, never a separate grey. */
+:root {
+  --rule-on-paper: color-mix(in oklab, var(--color-ink) 14%, transparent);
+  --rule-on-navy:  color-mix(in oklab, var(--color-paper) 18%, transparent);
+  --header-h: 68px;
+  /* Set by the pages that have them, so every sticky offset can add them
+     blind and still be right on the pages that do not. */
+  --rail-h: 0px;
+  --actionbar-h: 0px;
+}
+
+@media (min-width: 1024px) {
+  :root { --header-h: 84px; }
+}
+
+@layer base {
+  /* ───────────────────────────────────────────────────────────── base ──── */
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Deliberately NOT `scroll-behavior: smooth`. The router resets the scroll
+       with `window.scrollTo(0, 0)`, and a smooth root makes every page change
+       animate the whole document past you. In-page jumps ask for smooth
+       themselves, in JS, where it can also respect prefers-reduced-motion. */
+    scroll-padding-top: calc(var(--header-h) + var(--rail-h) + 16px);
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.62;
+    letter-spacing: 0.002em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  body[data-lock="true"] { overflow: hidden; }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 0, "WONK" 1;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3, h4 { font-variation-settings: "SOFT" 8, "WONK" 0; }
+
+  p { margin: 0; hyphens: none; }
+  p + p { margin-top: 1.1em; }
+
+  a { color: inherit; text-decoration: none; }
+  img, svg, video { display: block; max-width: 100%; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  input, textarea, select { font: inherit; color: inherit; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+
+  ::selection { background: var(--color-stamp); color: var(--color-paper); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-stamp);
+    outline-offset: 3px;
+  }
+
+  .on-navy :focus-visible { outline-color: var(--color-brass); }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-ui);
+    font-size: var(--text-label-lg);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 14px 20px;
+  }
+  .skip-link:focus { left: 12px; top: 12px; }
+}
+
+@layer components {
+  /* ──────────────────────────────────────────────────────────── layout ──── */
+
+  .shell {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .grid-page {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--spacing-grid);
+  }
+
+  @media (max-width: 900px) {
+    .grid-page { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .grid-page { grid-template-columns: 1fr; }
+  }
+
+  /* Escape the container without leaving the flow. */
+  .bleed {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+
+  .section { padding-block: var(--spacing-section); }
+  .section--tight { padding-block: var(--spacing-section-tight); }
+
+  .measure { max-width: var(--container-text); }
+
+  /* ───────────────────────────────────────────────────────── typography ──── */
+
+  .t-display { font-family: var(--font-display); font-size: var(--text-display); line-height: 0.90; letter-spacing: -0.025em; font-weight: 600; font-variation-settings: "SOFT" 0, "WONK" 1; }
+  .t-h1      { font-family: var(--font-display); font-size: var(--text-h1); line-height: 0.96; letter-spacing: -0.018em; font-weight: 600; }
+  .t-h2      { font-family: var(--font-display); font-size: var(--text-h2); line-height: 1.02; letter-spacing: -0.012em; font-weight: 600; }
+  .t-h3      { font-family: var(--font-display); font-size: var(--text-h3); line-height: 1.16; letter-spacing: -0.006em; font-weight: 600; font-variation-settings: "SOFT" 8, "WONK" 0; }
+  .t-item    { font-family: var(--font-display); font-size: var(--text-item); line-height: 1.24; letter-spacing: -0.004em; font-weight: 500; font-variation-settings: "SOFT" 8, "WONK" 0; }
+
+  .t-lede    { font-family: var(--font-body); font-size: var(--text-lede); line-height: 1.44; text-wrap: pretty; }
+  .t-body    { font-family: var(--font-body); font-size: var(--text-body); line-height: 1.62; }
+  .t-small   { font-family: var(--font-body); font-size: var(--text-small); line-height: 1.5; }
+  .t-caption { font-family: var(--font-body); font-size: var(--text-caption); line-height: 1.42; font-style: italic; color: var(--color-pencil); }
+
+  .t-label,
+  .t-label-lg {
+    font-family: var(--font-ui);
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .t-label    { font-size: var(--text-label);    letter-spacing: 0.18em; }
+  .t-label-lg { font-size: var(--text-label-lg); letter-spacing: 0.16em; }
+
+  .tabular { font-variant-numeric: tabular-nums lining-nums; }
+
+  /* Letterpress bite — h1/h2 on paper only. */
+  .letterpress {
+    text-shadow:
+      0 1px 0 color-mix(in oklab, var(--color-paper-bright) 70%, transparent),
+      0 -1px 0 color-mix(in oklab, var(--color-ink) 7%, transparent);
+  }
+
+  /* Drop cap — once per page, About only. */
+  .dropcap::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 4.4em;
+    line-height: 0.78;
+    margin: 0.06em 0.12em 0 0;
+    color: var(--color-stamp);
+  }
+
+  /* ──────────────────────────────────────────────────────────── texture ──── */
+
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    background-size: 180px 180px;
+    mix-blend-mode: multiply;
+    opacity: 0.055;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Local grain for navy sections — screen blend, absolute not fixed. */
+  .grain-dark { position: relative; isolation: isolate; }
+  .grain-dark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-size: 180px 180px;
+    mix-blend-mode: screen;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .grain-dark > * { position: relative; z-index: 2; }
+
+  .halftone {
+    background-color: var(--color-paper);
+    background-image: radial-gradient(circle, color-mix(in oklab, var(--color-ink) 22%, transparent) 0.8px, transparent 1px);
+    background-size: 4px 4px;
+  }
+
+  /* Leader dots — the price-row connector. */
+  .leaders {
+    flex: 1 1 auto;
+    min-width: 8px;
+    align-self: flex-end;
+    height: 1px;
+    margin: 0 10px 0.38em;
+    background-image: radial-gradient(circle, var(--color-ink) 0.9px, transparent 1.1px);
+    background-size: 7px 2px;
+    background-repeat: repeat-x;
+    opacity: 0.38;
+    transition: opacity var(--dur-micro) var(--ease-out);
+  }
+  .on-navy .leaders { background-image: radial-gradient(circle, var(--color-paper) 0.9px, transparent 1.1px); opacity: 0.3; }
+
+  /* Coffee ring — one per page, clipped by a section edge. */
+  .coffee-ring {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border: 2px solid var(--color-brass);
+    border-radius: 9999px;
+    opacity: 0.16;
+    pointer-events: none;
+  }
+
+  /* ──────────────────────────────────────────────────────────── reveal ──── */
+
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity var(--dur-enter) var(--ease-out),
+      transform var(--dur-enter) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ───────────────────────────────────────────────────────────── misc ──── */
+
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to   { transform: translateY(6px); }
+  }
+  .hero__arrow { animation: drift 2.4s var(--ease-inout) infinite alternate; }
+
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+}
+
+/* ───────────────────────────────────────────────── reduced motion ──── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .hero__arrow { animation: none; }
+}
