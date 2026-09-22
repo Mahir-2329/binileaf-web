@@ -45,7 +45,7 @@ export async function GET(request, { params }) {
     rows = await sql`
       select data, content_type, bytes, checksum
       from media
-      where path = ${publicPath} and is_active
+      where path = ${publicPath} and is_active and deleted_at is null
       limit 1
     `;
   } catch (error) {

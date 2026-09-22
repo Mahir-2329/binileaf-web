@@ -78,12 +78,43 @@ alter table menu_items  add column if not exists tags          text[] not null d
 alter table menu_items  add column if not exists media_slug    text;
 alter table menu_items  add column if not exists is_available  boolean not null default true;
 alter table faqs        add column if not exists topic         text not null default 'general';
+
+-- ── nothing is ever erased ────────────────────────────────────────────────
+-- Every "delete" in the admin is `deleted_at = now(), is_active = false`. The
+-- row stays: the audit log points at it, an enquiry may quote it, and a café
+-- that deletes the wrong thing at 11pm can have it back. Readers that already
+-- filter `is_active` therefore need no change; the admin's own lists, which
+-- deliberately show retired rows, filter `deleted_at is null` instead.
+alter table media          add column if not exists deleted_at timestamptz;
+alter table menu_sections  add column if not exists deleted_at timestamptz;
+alter table menu_groups    add column if not exists deleted_at timestamptz;
+alter table menu_items     add column if not exists deleted_at timestamptz;
+alter table menu_item_variants add column if not exists deleted_at timestamptz;
+alter table offers         add column if not exists deleted_at timestamptz;
+alter table faqs           add column if not exists deleted_at timestamptz;
+alter table enquiries      add column if not exists deleted_at timestamptz;
+
+-- A slug is only taken while the row that has it is still live, so deleting
+-- "Hot Coffee" and making it again works. `media.slug` keeps its plain unique
+-- constraint because four foreign keys point at it.
+alter table menu_sections drop constraint if exists menu_sections_slug_key;
+alter table menu_groups   drop constraint if exists menu_groups_slug_key;
+alter table menu_items    drop constraint if exists menu_items_slug_key;
+alter table offers        drop constraint if exists offers_slug_key;
+drop index if exists menu_items_slug_key;
+
+create unique index if not exists menu_sections_slug_live on menu_sections (slug) where deleted_at is null;
+create unique index if not exists menu_groups_slug_live   on menu_groups (slug)   where deleted_at is null;
+create unique index if not exists menu_items_slug_live    on menu_items (slug)    where deleted_at is null;
+create unique index if not exists offers_slug_live        on offers (slug)        where deleted_at is null;
+
+create index if not exists media_live_idx         on media (deleted_at);
+create index if not exists menu_items_live_idx    on menu_items (group_id, position) where deleted_at is null;
+create index if not exists menu_groups_live_idx   on menu_groups (section_id, position) where deleted_at is null;
 alter table enquiries   add column if not exists topic         text;
 alter table enquiries   add column if not exists notes         text;
 alter table enquiries   add column if not exists updated_at    timestamptz not null default now();
 alter table content_blocks add column if not exists label      text;
-
-create unique index if not exists menu_items_slug_key on menu_items (slug);
 
 create index if not exists media_category_idx on media (category);
 create index if not exists media_gallery_idx  on media (in_gallery, position);
@@ -220,6 +251,7 @@ create or replace view live_offers as
   select *
   from offers
   where is_active
+    and deleted_at is null
     and (starts_at is null or starts_at <= now())
     and (ends_at   is null or ends_at   >= now())
   order by priority desc, created_at desc;

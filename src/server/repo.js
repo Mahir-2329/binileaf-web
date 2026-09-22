@@ -106,11 +106,11 @@ export async function getMenu() {
         i.note          as item_note,
         im.path         as item_image
       from menu_sections s
-      left join media sm       on sm.slug = s.media_slug
-      left join menu_groups g  on g.section_id = s.id and g.is_active
-      left join menu_items i   on i.group_id = g.id and i.is_active
-      left join media im       on im.slug = i.media_slug
-      where s.is_active
+      left join media sm       on sm.slug = s.media_slug and sm.deleted_at is null
+      left join menu_groups g  on g.section_id = s.id and g.is_active and g.deleted_at is null
+      left join menu_items i   on i.group_id = g.id and i.is_active and i.deleted_at is null
+      left join media im       on im.slug = i.media_slug and im.deleted_at is null
+      where s.is_active and s.deleted_at is null
       order by s.position, g.position, i.position
     `,
     null
@@ -140,7 +140,7 @@ export async function getGallery() {
     (sql) => sql`
       select path as src, width as w, height as h, alt, tags
       from media
-      where in_gallery
+      where in_gallery and deleted_at is null
       order by position, created_at
     `,
     null
@@ -163,7 +163,7 @@ export async function getFaqs() {
     (sql) => sql`
       select question as q, answer as a
       from faqs
-      where is_active
+      where is_active and deleted_at is null
       order by position
     `,
     null
@@ -201,7 +201,7 @@ export async function getPlacements() {
     (sql) => sql`
       select p.key, m.path, m.width, m.height, m.alt
       from media_placements p
-      left join media m on m.slug = p.media_slug
+      left join media m on m.slug = p.media_slug and m.deleted_at is null
     `,
     null
   );
