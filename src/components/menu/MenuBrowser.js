@@ -27,6 +27,45 @@ const TONE = { lemonade: 'shade' };
  */
 const WIDE = new Set(['cold']);
 
+/**
+ * Split a double column's categories into two stacks of roughly equal length.
+ *
+ * They used to be laid in a two-column grid, and a grid aligns rows: a short
+ * category next to a long one left a hole the height of the difference —
+ * 400px of blank paper between Ice Tea and Mocktails. Two independent stacks
+ * have no rows to align, so each one closes up behind the category above it.
+ *
+ * The split is by weight, not by count, so the two stacks end at about the
+ * same depth; the order stays the order the categories are in, read down the
+ * first stack and then the second, the way a printed card is read.
+ *
+ * The admin's preview splits the same way — see `menu/shared.js` there.
+ */
+export function splitStacks(groups) {
+  const weigh = (group) => 1 + (group.items?.length ?? 0);
+  const total = groups.reduce((sum, group) => sum + weigh(group), 0);
+
+  const left = [];
+  const right = [];
+  let filled = 0;
+
+  for (const group of groups) {
+    const weight = weigh(group);
+    // Keep at least one category on each side, whatever the weights say.
+    const room = filled + weight / 2 <= total / 2 || left.length === 0;
+    const last = right.length === 0 && groups.indexOf(group) === groups.length - 1;
+
+    if (room && !last) {
+      left.push(group);
+      filled += weight;
+    } else {
+      right.push(group);
+    }
+  }
+
+  return [left, right];
+}
+
 const normalise = (value) => value.toLowerCase().trim();
 
 function filterSections(sections, query) {
@@ -135,22 +174,40 @@ export default function MenuBrowser({ columns, barista, railGroups }) {
                     <div className="mt-4 border-t-2 border-ink" />
                   </Reveal>
 
-                  <div
-                    className={
-                      wide
-                        ? 'mt-9 grid gap-x-[clamp(2rem,3vw,3.5rem)] gap-y-10 xl:grid-cols-2'
-                        : 'mt-9 flex flex-col gap-10'
-                    }
-                  >
-                    {section.groups.map((group) => (
-                      <MenuGroup
-                        key={group.id}
-                        group={group}
-                        family={group.family ?? 'ink'}
-                        tone={TONE[group.id]}
-                      />
-                    ))}
-                  </div>
+                  {wide ? (
+                    /*
+                      Below xl the wrappers are `display: contents`, so the
+                      categories are grid items of this one-column grid in
+                      their own order. From xl each wrapper becomes a stack of
+                      its own, side by side — and a short category no longer
+                      waits for a tall neighbour's row to end.
+                    */
+                    <div className="mt-9 grid gap-x-[clamp(2rem,3vw,3.5rem)] gap-y-10 xl:grid-cols-2 xl:items-start">
+                      {splitStacks(section.groups).map((stack, side) => (
+                        <div key={side} className="contents xl:flex xl:flex-col xl:gap-10">
+                          {stack.map((group) => (
+                            <MenuGroup
+                              key={group.id}
+                              group={group}
+                              family={group.family ?? 'ink'}
+                              tone={TONE[group.id]}
+                            />
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-9 flex flex-col gap-10">
+                      {section.groups.map((group) => (
+                        <MenuGroup
+                          key={group.id}
+                          group={group}
+                          family={group.family ?? 'ink'}
+                          tone={TONE[group.id]}
+                        />
+                      ))}
+                    </div>
+                  )}
 
                   {/* A rule closes the column, the way a printed one does —
                       so the paper below it reads as finished, not abandoned. */}

@@ -11,6 +11,10 @@ import { frameStyle } from '@/lib/frame';
  * picture is two subjects fighting over the same plate, and taking it away
  * gives the type the middle of the page at every width.
  *
+ * Centred across, but not down: on a phone the block sits at the foot of the
+ * photograph, where a thumb is and where the room above it can be seen.
+ * Centring it there left a third of the picture empty under the buttons.
+ *
  * The three sentences keep their hard breaks, because the break is the joke;
  * the type is sized so none of them can wrap instead.
  *
@@ -21,7 +25,7 @@ export default function Hero({ placements }) {
   const background = placements['home.hero.background'];
 
   return (
-    <section className="on-navy grain-dark relative flex min-h-[min(88svh,760px)] flex-col justify-center overflow-hidden overflow-x-clip bg-ink-deep text-paper lg:min-h-[min(92svh,860px)]">
+    <section className="on-navy grain-dark relative flex min-h-[min(84svh,720px)] flex-col justify-end overflow-hidden overflow-x-clip bg-ink-deep text-paper lg:min-h-[min(92svh,860px)] lg:justify-center">
       <div className="scrim hero-scrim absolute inset-0">
         <Image
           src={background.src}
@@ -49,13 +53,10 @@ export default function Hero({ placements }) {
           </h1>
 
           {/* The hero's second composition line, now on the centre axis. */}
-          <span
-            className="mt-7 h-px w-[88px] bg-brass lg:mt-10 lg:w-[120px]"
-            aria-hidden="true"
-          />
+          <span className="mt-6 h-px w-[88px] bg-brass lg:mt-10 lg:w-[120px]" aria-hidden="true" />
 
           {/* One action, one link — two equal slabs give no hierarchy. */}
-          <div className="mt-7 flex w-full flex-col items-center gap-5 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 lg:mt-10">
+          <div className="mt-6 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center lg:mt-10">
             <Button href="/menu" variant="inverse" className="w-full justify-center sm:w-auto">
               See the menu
             </Button>
