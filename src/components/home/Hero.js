@@ -13,7 +13,11 @@ import { frameStyle } from '@/lib/frame';
  *
  * Centred across, but not down: on a phone the block sits at the foot of the
  * photograph, where a thumb is and where the room above it can be seen.
- * Centring it there left a third of the picture empty under the buttons.
+ *
+ * And short. A hero that takes the whole phone screen is a page that looks
+ * empty until you scroll, so this is a band of about a quarter of the screen —
+ * the photograph, the three sentences at a size that still fits them on one
+ * line each, and the two actions on one row. The desktop plate is unchanged.
  *
  * The three sentences keep their hard breaks, because the break is the joke;
  * the type is sized so none of them can wrap instead.
@@ -25,7 +29,7 @@ export default function Hero({ placements }) {
   const background = placements['home.hero.background'];
 
   return (
-    <section className="on-navy grain-dark relative flex min-h-[min(84svh,720px)] flex-col justify-end overflow-hidden overflow-x-clip bg-ink-deep text-paper lg:min-h-[min(92svh,860px)] lg:justify-center">
+    <section className="on-navy grain-dark relative flex min-h-[22svh] flex-col justify-end overflow-hidden overflow-x-clip bg-ink-deep text-paper lg:min-h-[min(92svh,860px)] lg:justify-center">
       <div className="scrim hero-scrim absolute inset-0">
         <Image
           src={background.src}
@@ -40,11 +44,11 @@ export default function Hero({ placements }) {
         />
       </div>
 
-      <div className="shell relative z-10 w-full pb-[calc(var(--spacing-gutter)+8px)] pt-[calc(var(--header-h)+56px)] lg:pb-[clamp(2rem,4vw,3rem)] lg:pt-[calc(var(--header-h)+clamp(1.5rem,4vw,3rem))]">
+      <div className="shell relative z-10 w-full pb-5 pt-[calc(var(--header-h)-6px)] lg:pb-[clamp(2rem,4vw,3rem)] lg:pt-[calc(var(--header-h)+clamp(1.5rem,4vw,3rem))]">
         <div className="mx-auto flex max-w-[min(100%,72rem)] flex-col items-center text-center">
           {/* Block spans rather than <br>: `text-wrap: balance` applies per
               block box, so each sentence is left alone instead of rebalanced. */}
-          <h1 className="t-display text-[length:clamp(2.25rem,0.4625rem+7.94vw,5.2rem)] leading-[0.92] tracking-[-0.028em] text-paper lg:text-[length:clamp(2.75rem,1rem+6.6vw,6.25rem)] lg:leading-[0.90] lg:tracking-[-0.025em]">
+          <h1 className="t-display text-[length:clamp(1.4rem,0.45rem+4.2vw,3.4rem)] leading-[1.02] tracking-[-0.022em] text-paper lg:text-[length:clamp(2.75rem,1rem+6.6vw,6.25rem)] lg:leading-[0.90] lg:tracking-[-0.025em]">
             <span className="block">Bini is the bean.</span>
             <span className="block">Leaf is the chai.</span>
             <span className="block">
@@ -53,11 +57,11 @@ export default function Hero({ placements }) {
           </h1>
 
           {/* The hero's second composition line, now on the centre axis. */}
-          <span className="mt-6 h-px w-[88px] bg-brass lg:mt-10 lg:w-[120px]" aria-hidden="true" />
+          <span className="mt-3 h-px w-[64px] bg-brass lg:mt-10 lg:w-[120px]" aria-hidden="true" />
 
           {/* One action, one link — two equal slabs give no hierarchy. */}
-          <div className="mt-6 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center lg:mt-10">
-            <Button href="/menu" variant="inverse" className="w-full justify-center sm:w-auto">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 lg:mt-10">
+            <Button href="/menu" variant="inverse">
               See the menu
             </Button>
 
