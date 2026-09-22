@@ -19,14 +19,6 @@ export const placements = [
     fallback: '/media/interior/seating-gallery-wall.webp',
   },
   {
-    key: 'home.hero.portrait',
-    page: 'Home',
-    label: 'Hero card (desktop only)',
-    hint: 'The portrait card beside the headline. Hidden on phones.',
-    aspect: '3/4',
-    fallback: '/media/drinks/cafe-latte.webp',
-  },
-  {
     key: 'home.signature.1',
     page: 'Home',
     label: 'Signature 1 — Golden Drift',
