@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Button, { GhostLink } from '@/components/ui/Button';
-import { CropMarks, Stamp } from '@/components/ui/Primitives';
+import { CropMarks } from '@/components/ui/Primitives';
 import { DownArrow } from '@/components/art/Illustrations';
 
 /**
  * 01 — Hero.
  *
- * Desktop is the asymmetric 7/5: type left, a portrait photo bleeding off the
- * right gutter. On a phone that second photograph is deleted outright — the
+ * Desktop is the asymmetric 7/5: type left, a portrait photo in the right
+ * column, whole. On a phone that second photograph is deleted outright — the
  * hero already *is* a full-bleed photograph, and laying a picture on a picture
  * was what pushed the whole section past the fold.
  *
@@ -51,16 +51,11 @@ export default function Hero({ placements }) {
               </span>
             </h1>
 
-            {/* The rule and the stamp share one axis — the hero's second
-                composition line, and the only hours signal above the fold. */}
-            <div className="mt-7 flex items-center justify-between gap-4 lg:mt-10 lg:justify-start">
+            {/* The hero's second composition line. The hours live in the
+                header, the footer and the contact page; a third copy stamped
+                over the photograph was covering the drinks it sat on. */}
+            <div className="mt-7 flex items-center gap-4 lg:mt-10">
               <span className="h-px w-[88px] shrink-0 bg-brass lg:w-[120px]" aria-hidden="true" />
-              <Stamp
-                lines={['Open daily', '10:30 AM', '— 12:30 AM']}
-                tone="paper"
-                size="sm"
-                className="shrink-0 bg-ink-deep/70 lg:hidden"
-              />
             </div>
 
             {/* One action, one link — two equal slabs give no hierarchy. */}
@@ -84,23 +79,23 @@ export default function Hero({ placements }) {
 
           {/* Desktop only. */}
           <div className="col-span-full hidden lg:col-span-4 lg:col-start-9 lg:block">
+            {/*
+              The frame sits inside the column instead of bleeding off the
+              right gutter. The café swaps this photograph from the admin, and
+              half of whatever it picked was falling off the edge of the page.
+            */}
             <div className="crop relative">
-              <div className="photo relative aspect-[3/4] ring-1 ring-paper/20 lg:-mr-[calc(var(--spacing-gutter))]">
+              <div className="photo relative aspect-[3/4] ring-1 ring-paper/20">
                 <Image
                   src={portrait.src}
                   alt={portrait.alt || 'Inside Binileaf Café'}
                   fill
                   priority
                   sizes="32vw"
-                  className="object-cover"
+                  className="object-cover object-center"
                 />
               </div>
               <CropMarks tone="brass" />
-              <Stamp
-                lines={['Open daily', '10:30 AM', '— 12:30 AM']}
-                tone="paper"
-                className="absolute -left-4 top-1/2 grid -translate-y-1/2 bg-ink-deep/80"
-              />
             </div>
           </div>
         </div>
