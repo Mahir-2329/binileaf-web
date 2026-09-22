@@ -46,3 +46,6 @@ next-env.d.ts
 
 # source images — the bytes live in Postgres (npm run db:push)
 # keep them here so the seed can re-upload; they are never served from disk
+
+# local agent notes
+CLAUDE.md
