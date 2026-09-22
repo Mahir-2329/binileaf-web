@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Reveal from '@/components/ui/Reveal';
 import Button from '@/components/ui/Button';
 import { address, contact, hours } from '@/data/site';
+import { frameStyle } from '@/lib/frame';
 
 /**
  * The imprint — how a printed broadside signs itself off.
@@ -83,6 +84,7 @@ export default function Imprint({ placements }) {
                 width={photo.w}
                 height={photo.h}
                 sizes="(max-width: 1024px) 100vw, 38vw"
+                style={frameStyle(photo)}
               />
             </div>
             <p className="photo-index mt-4">Look for the neon — University Area, Ahmedabad</p>

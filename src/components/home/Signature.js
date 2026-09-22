@@ -4,6 +4,7 @@ import Reveal from '@/components/ui/Reveal';
 import { CropMarks, SectionHeader } from '@/components/ui/Primitives';
 import { GhostLink } from '@/components/ui/Button';
 import DrinksCarousel from './DrinksCarousel';
+import { frameStyle } from '@/lib/frame';
 
 /**
  * The visual peak of the home page: the six drinks that exist nowhere else,
@@ -83,6 +84,7 @@ export default function Signature({ placements }) {
                       width={1444}
                       height={1805}
                       sizes="(max-width: 1024px) 46vw, 30vw"
+                      style={frameStyle(placements[`home.signature.${i + 1}`])}
                     />
                   </div>
                   <CropMarks tone="brass" />

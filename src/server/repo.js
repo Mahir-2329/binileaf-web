@@ -1,6 +1,7 @@
 import 'server-only';
 import { query, getSql, hasDatabase } from '@/lib/db';
 import { mediaSrc, mediaSrcs } from '@/lib/media';
+import { readCrop } from '@/lib/frame';
 import { menu as seedMenu } from '@/data/menu';
 import { gallery as seedGallery } from '@/data/gallery';
 import { faqs as seedFaqs, story, values, franchise, quickFacts } from '@/data/content';
@@ -199,7 +200,7 @@ export async function getContent(key) {
 export async function getPlacements() {
   const { rows, source } = await query(
     (sql) => sql`
-      select p.key, m.path, m.width, m.height, m.alt
+      select p.key, p.crop, m.path, m.width, m.height, m.alt
       from media_placements p
       left join media m on m.slug = p.media_slug and m.deleted_at is null
     `,
@@ -216,13 +217,18 @@ export async function getPlacements() {
         w: Number(row.width),
         h: Number(row.height),
         alt: row.alt ?? '',
+        // How the café framed it. `frameStyle` in src/lib/frame.js turns this
+        // into the object-position and zoom the page renders with.
+        crop: readCrop(row.crop),
       };
     }
   }
 
   // Anything the database did not answer for keeps its built-in photograph.
   for (const [key, src] of Object.entries(placementFallbacks)) {
-    if (!resolved[key]) resolved[key] = { src: mediaSrc(src), w: 1600, h: 2000, alt: '' };
+    if (!resolved[key]) {
+      resolved[key] = { src: mediaSrc(src), w: 1600, h: 2000, alt: '', crop: null };
+    }
   }
 
   return resolved;

@@ -7,6 +7,7 @@ import JsonLd from '@/components/seo/JsonLd';
 import { getContent, getPlacements } from '@/server/repo';
 import { pageMeta, breadcrumbSchema } from '@/lib/seo';
 import { founders, site, address } from '@/data/site';
+import { frameStyle } from '@/lib/frame';
 
 /**
  * Rebuilt on demand when the admin writes (see /api/revalidate); this window
@@ -77,6 +78,7 @@ export default async function AboutPage() {
               width={1600}
               height={900}
               sizes="100vw"
+              style={frameStyle(placements['about.hero'])}
               priority
             />
           </div>
@@ -106,6 +108,7 @@ export default async function AboutPage() {
                   width={1600}
                   height={2000}
                   sizes="(max-width: 1024px) 100vw, 40vw"
+                  style={frameStyle(placements['about.pasted'])}
                 />
               </div>
               <Stamp
@@ -214,6 +217,7 @@ export default async function AboutPage() {
                     width={frame.w}
                     height={frame.h}
                     sizes="(max-width: 640px) 66vw, (max-width: 1024px) 40vw, 23vw"
+                    style={frameStyle(frame)}
                   />
                 </div>
               </div>

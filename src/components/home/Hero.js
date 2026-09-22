@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Button, { GhostLink } from '@/components/ui/Button';
 import { CropMarks } from '@/components/ui/Primitives';
 import { DownArrow } from '@/components/art/Illustrations';
+import { frameStyle } from '@/lib/frame';
 
 /**
  * 01 — Hero.
@@ -34,7 +35,9 @@ export default function Hero({ placements }) {
           priority
           sizes="100vw"
           className="object-cover"
-          style={{ objectPosition: '50% 45%' }}
+          // The café can reframe this from "Where they appear"; until it does,
+          // the crop the design shipped with.
+          style={frameStyle(background, { y: 45 })}
         />
       </div>
 
@@ -92,7 +95,8 @@ export default function Hero({ placements }) {
                   fill
                   priority
                   sizes="32vw"
-                  className="object-cover object-center"
+                  className="object-cover"
+                  style={frameStyle(portrait)}
                 />
               </div>
               <CropMarks tone="brass" />

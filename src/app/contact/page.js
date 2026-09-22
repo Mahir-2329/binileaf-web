@@ -12,6 +12,7 @@ import JsonLd from '@/components/seo/JsonLd';
 import { getPlacements } from '@/server/repo';
 import { pageMeta, breadcrumbSchema, faqSchema } from '@/lib/seo';
 import { address, contact, hours, amenities } from '@/data/site';
+import { frameStyle } from '@/lib/frame';
 
 /**
  * Rebuilt on demand when the admin writes (see /api/revalidate); this window
@@ -217,6 +218,7 @@ export default async function ContactPage() {
                       width={frame.w}
                       height={frame.h}
                       sizes="(max-width: 640px) 52vw, (max-width: 1024px) 32vw, 18vw"
+                      style={frameStyle(frame)}
                     />
                   </div>
                 </div>

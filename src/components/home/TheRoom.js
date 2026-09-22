@@ -4,6 +4,7 @@ import Reveal from '@/components/ui/Reveal';
 import { SectionHeader } from '@/components/ui/Primitives';
 import { GhostLink } from '@/components/ui/Button';
 import { gallery } from '@/data/gallery';
+import { frameStyle } from '@/lib/frame';
 
 /**
  * 06 — A contact-sheet strip that starts at the page gutter and runs off the
@@ -46,6 +47,7 @@ export default function TheRoom({ placements }) {
                     width={frame.w}
                     height={frame.h}
                     sizes="(max-width: 640px) 66vw, (max-width: 1024px) 40vw, 23vw"
+                    style={frameStyle(frame)}
                   />
                 </div>
               </div>

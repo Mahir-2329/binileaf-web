@@ -352,9 +352,15 @@ create table if not exists media_placements (
   hint       text,
   aspect     text,
   media_slug text references media (slug) on delete set null,
+  -- How the photograph sits in the slot: {"x":50,"y":50,"zoom":1}. A focal
+  -- point and a zoom, not a cut — the bytes are never touched, so one
+  -- photograph can be framed differently in every slot that uses it.
+  crop       jsonb,
   position   integer not null default 0,
   updated_at timestamptz not null default now()
 );
+
+alter table media_placements add column if not exists crop jsonb;
 
 create index if not exists placements_page_idx on media_placements (page, position);
 
